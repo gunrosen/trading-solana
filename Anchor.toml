@@ -4,15 +4,15 @@
 seeds = false
 skip-lint = false
 
-[programs.localnet]
+[programs.testnet]
 trading_solana = "5KAthXLCxvU7qWcK2yRKN83wgvzQgL9g9zLLnXYQEw5z"
 
 [registry]
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "Localnet"
-wallet = "/home/hulk/.config/solana/id.json"
+cluster = "testnet"
+wallet = "/home/hulk/.config/solana/hulk.json"
 
 [scripts]
 test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"
