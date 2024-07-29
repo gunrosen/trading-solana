@@ -6,32 +6,32 @@ declare_id!("5KAthXLCxvU7qWcK2yRKN83wgvzQgL9g9zLLnXYQEw5z");
 pub mod trading_solana {
     use super::*;
 
-    pub fn initialize(_ctx: Context<Initialize>) -> Result<()> {
+    pub fn initialize(ctx: Context<Initialize>) -> Result<()> {
+        let account_data = &mut ctx.accounts.pda_account;
         Ok(())
-    }
-    pub fn set_data(ctx: Context<SetData>, data: u64) -> Result<()> {
-        ctx.accounts.my_account.data = data;
-        Ok(())
-    }
-
-    pub fn get_data(ctx: Context<SetData>) -> Result<u64> {
-        Ok(ctx.accounts.my_account.data)
     }
 
 }
 
 #[derive(Accounts)]
-pub struct Initialize {}
+pub struct Initialize<'info> {
+    #[account(mut)]
+    pub user: Signer<'info>,
 
+    #[account(
+        init,
+        seeds = [b"data", user.key().as_ref()],
+        bump,
+        payer = user,
+        space = 8 + DataAccount::INIT_SPACE
+    )]
+    pub pda_account: Account<'info, DataAccount>,
+    pub system_program: Program<'info, System>,
+}
 
 #[account]
-#[derive(Default)]
-pub struct MyAccount {
-    data: u64
-}
-
-#[derive(Accounts)]
-pub struct SetData<'info> {
-    #[account(mut)]
-    pub my_account: Account<'info, MyAccount>
+#[derive(InitSpace)]
+pub struct DataAccount {
+    pub user: Pubkey,
+    pub bump: u8,
 }
